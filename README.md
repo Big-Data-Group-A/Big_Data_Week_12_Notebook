@@ -1,2 +1,18 @@
 #  final-project proposal
-an available traffic and contextual data be used to predict congestion levels in urban areas, with a focus on Kigali, Rwanda? Our project will use a real traffic dataset with at least 500 records containing time, location/road, traffic volume, speed, travel-time and weather/contextual features, with congestion level as the target, using Rwanda-specific data if available, otherwise clearly stating the study location. We will clean and explore the data in PySpark, analyse peak-hour and location patterns, and build and evaluate a regression or classification model using MAE/R² or precision, recall and F1-score. This matters because traffic congestion increases travel time, lowers productivity, and limits mobility in growing cities like Kigali, and an accurate prediction model with an interactive dashboard will help commuters plan trips and help transport planners anticipate busy periods and make better decisions.
+Group C : 
+1. MUTANGANA Joseph 29061
+2. Ineza Sonia 27852
+3. Uwimana Angelique 28868
+4. Munezero Olivier Douglas 29647
+5. Uwimpuhwe phionah 27533
+6. NISHIMWE Prosper 28926
+7. HIRWA NGENZI Honore 29111
+8. Ishimwe Abdul Salam 28816
+9. MICOMYIZA Justin 28780
+10. RUZA WACU Ange Delphin 29270
+11. 
+12. 
+13.
+
+Our group wants to find out whether traffic volume, time patterns and weather conditions can be used to predict traffic congestion. We will use the *Metro Interstate Traffic Volume* dataset from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/492/metro+interstate+traffic+volume). The dataset contains about 48,204 records collected hourly along Interstate 94 in Minneapolis–St. Paul, USA, between 2012 and 2018. It includes traffic volume, date and time, temperature, rainfall, snowfall, weather conditions and holidays. This project is important because understanding traffic patterns can help transport planners identify busy hours and make better decisions about traffic management. Our group plans to use a *regression model* to predict the number of vehicles passing each hour based on time and weather conditions.
+
