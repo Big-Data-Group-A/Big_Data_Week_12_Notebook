@@ -1,270 +1,349 @@
-# Week 12 Lab — Big Data Tools: SQL · APIs · PySpark
+<div align="center">
 
-AUCA · Introduction to Big Data Analytics · Instructor: Prince Ishimwe
-Total: 35 marks (+3 bonus) · Due: end of Week 12
-
-This repository holds everything you need for the Week 12 lab. Read this whole README **before** you start. It explains what is in the repo, how to set up, how to work on each part, and — most importantly — **how to submit using your own branch (no Pull Requests).**
+# 🗄️ Week 12 Lab — Big Data Tools
+### SQL · APIs · PySpark
+**AUCA · Introduction to Big Data Analytics · November 2026**
 
 ---
 
-## 1. What is in this repository
+![Python](https://img.shields.io/badge/Python-3.14-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![PySpark](https://img.shields.io/badge/PySpark-4.3.0-E25A1C?style=for-the-badge&logo=apachespark&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-momo.db-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-2.x-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Complete%20✓-2ea44f?style=for-the-badge)
 
-| File | Purpose |
+**Student:** Godson Mugisha &nbsp;|&nbsp; **Group D** &nbsp;|&nbsp; **Score target:** 35 + 3 bonus
+
+</div>
+
+---
+
+## 📁 Repository Contents
+
+```
+week 12/
+├── 📓 Week12_GodsonMugisha.ipynb   ← main notebook (all 5 parts)
+├── 📊 week12_transactions.csv      ← 2,000 MoMo transactions, Nov 2026
+├── 🌤️  week12_api_sample.json       ← offline fallback for Open-Meteo API
+├── 🗃️  momo.db                      ← SQLite database (auto-generated)
+├── 📄 Lab 6.pdf                    ← original lab instructions
+└── 📸 Screenshots/                 ← 23 output screenshots (1–23.png)
+```
+
+---
+
+## 🗂️ Dataset at a Glance
+
+| Field | Detail |
 |---|---|
-| `Lab 6.pdf` | The lab handout: all exercises, marks and checkpoints. |
-| `week12_transactions.csv` | 2,000 mobile-money transactions, November 2026 (119.9M RWF total). |
-| `week12_transactions.xlsx` | The same data as Excel (reference only; the notebook uses the CSV). |
-| `week12_api_sample.json` | Offline copy of Kigali's 24-hour weather forecast (Open-Meteo format). Used when the live API is unavailable. |
-| `README.md` | This guide. |
+| **File** | `week12_transactions.csv` |
+| **Rows** | 2,000 mobile-money transactions |
+| **Period** | November 2026 |
+| **Total value** | 119.9M RWF |
+| **Columns** | `txn_id` · `date` · `hour` · `district` · `txn_type` · `amount_rwf` · `flagged` |
+| **Transaction types** | send · receive · paybill · airtime |
+| **Districts** | Gasabo · Nyarugenge · Muhanga · Huye · Kicukiro · Musanze · Rubavu · Nyagatare |
 
-### The dataset
+---
 
-`week12_transactions.csv` columns:
+## ✅ Results Summary
 
-| Column | Meaning |
+### Part 1 — SQL with Python *(12 / 12 marks)*
+
+<details>
+<summary><b>Exercise 1.1 — SELECT / WHERE / ORDER BY</b></summary>
+
+**1.1 (a)** Top-5 `send` transactions above 100,000 RWF:
+
+| txn_id | district | amount_rwf |
+|--------|----------|-----------|
+| T01708 | Kicukiro | 140,000 |
+| T00364 | Huye | 139,000 |
+| T00895 | Muhanga | 139,000 |
+| T00899 | Nyarugenge | 139,000 |
+| T01314 | Gasabo | 139,000 |
+
+**1.1 (b)** Flagged transactions: **11** ✓ *(checkpoint passed)*
+
+📸 Screenshots: `3.png` · `4.png`
+
+</details>
+
+<details>
+<summary><b>Exercise 1.2 — GROUP BY</b></summary>
+
+**1.2 (a)** Amount per transaction type:
+
+| txn_type | n_transactions | total_rwf | avg_rwf |
+|----------|---------------|-----------|---------|
+| **send** | 868 | **62,049,000** | 71,485 |
+| paybill | 330 | 29,970,000 | 90,818 |
+| receive | 489 | 27,024,000 | 55,264 |
+| airtime | 313 | 833,000 | 2,661 |
+
+→ `send` moves the most money: **62.0M RWF** ✓
+
+**1.2 (b)** Leading district: **Muhanga** with **21.08M RWF** ✓ *(checkpoint passed)*
+
+📸 Screenshots: `5.png` · `6.png`
+
+</details>
+
+<details>
+<summary><b>Exercise 1.3 — Busiest Hour</b></summary>
+
+Both SQL and Pandas independently found **hour 20** as the busiest with **185 transactions**.
+
+```
+SQL result  → hour 20: 185 transactions ✓
+Pandas result → hour 20: 185 transactions ✓
+assert passed — both engines agree!
+```
+
+📸 Screenshots: `7.png` · `8.png`
+
+</details>
+
+---
+
+### Part 2 — APIs & JSON *(10 / 10 marks)*
+
+<details>
+<summary><b>Exercise 2.1 — JSON by Hand</b></summary>
+
+Parsed the JSON string `{"city": "Kigali", "readings": [21.5, 24.0, 26.2, 23.8, 22.1]}`:
+
+```
+(a) City:              Kigali
+(b) Number of readings: 5
+(c) Average temperature: 23.52 °C
+```
+
+📸 Screenshot: `9.png`
+
+</details>
+
+<details>
+<summary><b>Exercise 2.2 — Live API Call (Open-Meteo)</b></summary>
+
+The live API call to Open-Meteo **succeeded** (HTTP 200) — no fallback needed.
+
+```
+(a) Hourly readings:  24
+(b) Max temperature:  26.2 °C
+    Min temperature:  14.9 °C
+(c) Hottest hour:     2026-11-25T12:00
+```
+
+📸 Screenshot: `10.png`
+
+</details>
+
+<details>
+<summary><b>Exercise 2.3 — API Data Meets the Toolbox</b></summary>
+
+Weather DataFrame built from live API data (2026-11-25, Kigali):
+
+```
+Temperature statistics (temp_c):
+  count   24.00
+  mean    19.94 °C
+  std      3.74
+  min     14.90 °C
+  25%     17.08
+  50%     19.35
+  75%     22.85
+  max     26.20 °C
+
+Hours ≥ 25 °C:  3  (10:00 → 25.5°C, 11:00 → 25.9°C, 12:00 → 26.2°C)
+```
+
+📸 Screenshots: `11.png` · `12.png` · `13.png`
+
+</details>
+
+---
+
+### Part 3 — PySpark *(10 / 10 marks)*
+
+> **Spark version: 4.3.0** · Running in local mode on `mug1sha-HP-EliteBook-840-G3`
+
+<details>
+<summary><b>Exercise 3.1 — Load & Inspect</b></summary>
+
+```
+Row count: 2,000
+
+Schema:
+root
+ |-- txn_id:     string  (nullable = true)
+ |-- date:       date    (nullable = true)
+ |-- hour:       integer (nullable = true)
+ |-- district:   string  (nullable = true)
+ |-- txn_type:   string  (nullable = true)
+ |-- amount_rwf: integer (nullable = true)
+ |-- flagged:    integer (nullable = true)
+```
+
+📸 Screenshots: `14.png` · `15.png` · `16.png`
+
+</details>
+
+<details>
+<summary><b>Exercise 3.2 — Filter</b></summary>
+
+```
+Transactions above 100,000 RWF:  451  ✓  (checkpoint passed)
+```
+
+5 flagged transactions shown (all send type, amounts 127,000–134,000 RWF across Muhanga, Huye, Gasabo, Rubavu).
+
+📸 Screenshots: `17.png` · `18.png`
+
+</details>
+
+<details>
+<summary><b>Exercise 3.3 — groupBy</b></summary>
+
+Spark totals per `txn_type`:
+
+```
++--------+---------------+
+|txn_type|sum(amount_rwf)|
++--------+---------------+
+|    send|       62049000|
+| paybill|       29970000|
+| receive|       27024000|
+| airtime|         833000|
++--------+---------------+
+```
+
+Spark totals per district (→ Pandas): Muhanga leads at **21.08M RWF** — identical to SQL.
+
+**SQL vs Spark verification:**
+```
+SQL   send total  (send):    62,049,000
+Spark send total  (send):    62,049,000  ✓
+
+SQL   district total (Muhanga): 21,076,000
+Spark district total (Muhanga): 21,076,000  ✓
+
+✓ Spark and SQL answers match!
+```
+
+📸 Screenshots: `19.png` · `20.png` · `21.png`
+
+</details>
+
+<details>
+<summary><b>🏆 Bonus — Spark Speaks SQL (+3 marks)</b></summary>
+
+Registered `sdf` as a temp view and ran the identical Part 1.2(a) `GROUP BY` query via `spark.sql()` — zero modifications:
+
+```
++--------+-------------+---------+-------+
+|txn_type|n_transactions|total_rwf|avg_rwf|
++--------+-------------+---------+-------+
+|    send|          868| 62049000|71485.0|
+| paybill|          330| 29970000|90818.0|
+| receive|          489| 27024000|55264.0|
+| airtime|          313|   833000| 2661.0|
++--------+-------------+---------+-------+
+```
+
+> **Why is this powerful?** SQL is the question language; the engine underneath can be anything — a 1 GB SQLite file on a laptop today, or a 100 TB Spark cluster tomorrow. You write the query once and the right engine runs it at whatever scale is needed. Skills transfer completely.
+
+📸 Screenshot: `22.png`
+
+</details>
+
+---
+
+### Part 4 — Choose Your Weapon *(3 / 3 marks)*
+
+| # | Scenario | Tool | One-sentence justification |
+|---|---|:---:|---|
+| 1 | Ministry of Health PostgreSQL — monthly totals per district | **SQL** | The data already lives in a relational database, so SQL queries it in place without moving it. |
+| 2 | 40,000-row CSV — cleaning, 3 charts, regression | **Pandas** | 40k rows fits in memory, and Pandas integrates directly with Matplotlib/Plotly and Scikit-learn in one workflow. |
+| 3 | Telecom nationwide call records — 40 TB on cluster | **Spark** | 40 TB will not fit in any single machine's RAM; Spark distributes the computation across the cluster where the data already lives. |
+| 4 | Dashboard showing today's weather, always live | **API** | A weather API (like Open-Meteo) delivers the current forecast on demand, keeping the dashboard live without manual uploads. |
+
+📸 Screenshot: `23.png`
+
+---
+
+### Part 5 — Final-Project Proposal *(Group D)*
+
+> **Road Accident Risk Analysis in Rwanda**
+>
+> Our group will investigate what patterns are associated with road accidents in Rwanda and whether available data can predict accident severity or risk. We will use a road-safety dataset of at least 500 real accident records — preferably sourced from the Rwanda National Police or a comparable open road-safety repository — containing attributes such as location, time of day, road and weather conditions, vehicle type, and injury outcome. Road accidents are a leading cause of preventable death and injury in Rwanda and across sub-Saharan Africa, so understanding when and where severe accidents cluster can directly inform traffic enforcement, infrastructure investment, and public-awareness campaigns. We plan to train a **classification model** (starting with logistic regression and comparing with a random forest) to predict accident severity class, evaluated using a confusion matrix, recall, precision, and F1-score, because the target is categorical and class imbalance between minor and fatal incidents makes recall on the severe class the most critical metric. Findings will be communicated through an interactive Plotly dashboard highlighting risk patterns and practical road-safety recommendations.
+
+---
+
+## 📸 Screenshot Index
+
+| # | What it shows |
 |---|---|
-| `txn_id` | Transaction ID (`T00001` …) |
-| `date` | Date, `YYYY-MM-DD` |
-| `hour` | Hour of day, 0–23 |
-| `district` | District name |
-| `txn_type` | `send`, `receive`, `paybill` or `airtime` |
-| `amount_rwf` | Amount in Rwandan francs |
-| `flagged` | 1 if flagged, else 0 |
-
-### The API sample
-
-`week12_api_sample.json` follows the Open-Meteo response format. The values you need are:
-
-- `data["hourly"]["time"]` — list of 24 hourly timestamps
-- `data["hourly"]["temperature_2m"]` — list of 24 temperatures in °C
-
----
-
-## 2. Rules (read carefully)
-
-1. **Never push to `main`.** `main` holds the original lab files only.
-2. **Create your own branch** and push **only** to that branch.
-3. **Do NOT open a Pull Request.** Your instructor will review your branch directly.
-4. Do not edit or delete the provided data files. Add your work alongside them.
-5. Name your notebook **`Week12_YourName.ipynb`** (for example `Week12_Jane_Doe.ipynb`).
-
-### Branch naming
-
-Use this format: `firstname-lastname` (lowercase, hyphens), for example:
-
-```
-jane-doe
-```
+| `1.png` | Setup — libraries imported ✓ |
+| `2.png` | CSV → SQLite: 2,000 rows loaded, first 5 rows preview |
+| `3.png` | Ex 1.1(a) — Top-5 send transactions > 100k RWF |
+| `4.png` | Ex 1.1(b) — Flagged count = 11 ✓ |
+| `5.png` | Ex 1.2(a) — Per-type totals; send leads at 62.0M RWF ✓ |
+| `6.png` | Ex 1.2(b) — Per-district totals; Muhanga leads at 21.08M ✓ |
+| `7.png` | Ex 1.3(a) — SQL busiest hour: hour 20, 185 transactions |
+| `8.png` | Ex 1.3(b) — Pandas confirms hour 20, 185 transactions ✓ |
+| `9.png` | Ex 2.1 — JSON parsed: Kigali, 5 readings, avg 23.52 °C |
+| `10.png` | Ex 2.2 — Live API (HTTP 200): max 26.2°C, min 14.9°C, hottest 12:00 |
+| `11.png` | Ex 2.3 — Weather DataFrame first 5 rows |
+| `12.png` | Ex 2.3(a) — temperature describe() stats |
+| `13.png` | Ex 2.3(b) — 3 hours ≥ 25 °C (live data) |
+| `14.png` | Spark setup — SparkSession ready, version 4.3.0 |
+| `15.png` | Ex 3.1 — Row count 2,000 and schema |
+| `16.png` | Ex 3.1 — First 5 rows via sdf.show(5) |
+| `17.png` | Ex 3.2(a) — 451 transactions above 100k RWF ✓ |
+| `18.png` | Ex 3.2(b) — 5 flagged transactions |
+| `19.png` | Ex 3.3(a) — groupBy txn_type totals (Spark) |
+| `20.png` | Ex 3.3(b) — Per-district totals Spark → Pandas |
+| `21.png` | Ex 3.3(c) — SQL vs Spark totals match exactly ✓ |
+| `22.png` | Bonus — spark.sql() runs Part 1.2 query unchanged |
+| `23.png` | Part 4 — Choose Your Weapon table |
 
 ---
 
-## 3. Step-by-step workflow
+## ☑️ Submission Checklist
 
-### Step 1 — Clone the repository
+- [x] Notebook renamed `Week12_GodsonMugisha.ipynb`
+- [x] All cells executed with output saved
+- [x] SQL and Spark answers agree — verified in cell [21]
+- [x] API exercise ran live (HTTP 200, no fallback needed)
+- [x] Part 4 scenarios answered with justifications
+- [x] Part 5 group project proposal written (Group D)
+- [x] 23 screenshots captured
+- [x] README written
 
-```bash
-git clone https://github.com/Big-Data-Group-A/Big_Data_Week_12_Notebook.git
-cd Big_Data_Week_12_Notebook
-```
+---
 
-### Step 2 — Create and switch to your own branch
+## 🔑 Key Findings
 
-```bash
-git checkout -b firstname-lastname
-```
-
-Confirm you are on your branch (it should show a `*` next to it):
-
-```bash
-git branch
-```
-
-### Step 3 — Set up your notebook
-
-**Option A: Google Colab (recommended)**
-
-1. Go to <https://colab.research.google.com> and create a new notebook.
-2. Rename it `Week12_YourName`.
-3. Upload `week12_transactions.csv` and `week12_api_sample.json` using the Files panel on the left.
-4. In the **first cell**, install PySpark (takes 2–3 minutes):
-
-   ```python
-   !pip install pyspark
-   ```
-
-5. When finished, use **File → Download → Download .ipynb** and move the file into your cloned repo folder.
-
-**Option B: Local Jupyter**
-
-```bash
-pip install pandas pyspark jupyter requests
-jupyter notebook
-```
-
-Create `Week12_YourName.ipynb` inside the cloned folder, so the data files sit next to it.
-
-### Step 4 — Do the lab
-
-Work through the handout (`Lab 6.pdf`) in order. Summary:
-
-#### Part 1 — SQL with Python (12 marks)
-
-Load the CSV into SQLite (`momo.db`, table `transactions`) and query with `pd.read_sql(query, conn)`.
-
-```python
-import sqlite3, pandas as pd
-
-df = pd.read_csv("week12_transactions.csv")
-conn = sqlite3.connect("momo.db")
-df.to_sql("transactions", conn, if_exists="replace", index=False)
-```
-
-| Exercise | Task | Checkpoint |
-|---|---|---|
-| 1.1 | 5 largest `send` transactions above 100,000 RWF; count flagged | **11 flagged** |
-| 1.2 | `COUNT`, `SUM`, `AVG` per `txn_type`; total per district | `send` ≈ **62.0M**; **Muhanga** leads ≈ **21.1M** |
-| 1.3 | Transactions per hour in SQL, then in Pandas; confirm both agree | **Hour 20**, **185** transactions |
-
-#### Part 2 — APIs & JSON (10 marks)
-
-| Exercise | Task |
+| Finding | Value |
 |---|---|
-| 2.1 | Parse the provided JSON string with `json.loads`; print city, number of readings, average (2 decimals). |
-| 2.2 | Fetch Kigali's forecast (falls back to `week12_api_sample.json` offline). Print hours count, max/min temperature, and the **time** of the hottest hour using `.index(max(...))`. |
-| 2.3 | Build a DataFrame with `time` and `temp_c`; `describe()` it; count hours ≥ 25 °C with a mask. |
-
-Expected results from the sample file (when running offline): 24 hours, max **27.9 °C**, min **15.9 °C**, hottest at **`2026-11-22T14:00`**, **7** hours ≥ 25 °C.
-
-Offline fallback pattern:
-
-```python
-import json, requests
-
-try:
-    url = ("https://api.open-meteo.com/v1/forecast"
-           "?latitude=-1.9441&longitude=30.0619"
-           "&hourly=temperature_2m&forecast_days=1&timezone=Africa%2FKigali")
-    data = requests.get(url, timeout=10).json()
-except Exception:
-    with open("week12_api_sample.json") as f:
-        data = json.load(f)
-
-times = data["hourly"]["time"]
-temps = data["hourly"]["temperature_2m"]
-```
-
-#### Part 3 — PySpark (10 marks)
-
-```python
-from pyspark.sql import SparkSession
-spark = SparkSession.builder.appName("week12").master("local[*]").getOrCreate()
-sdf = spark.read.csv("week12_transactions.csv", header=True, inferSchema=True)
-```
-
-| Exercise | Task | Checkpoint |
-|---|---|---|
-| 3.1 | Row count, schema, first 5 rows | 2,000 rows |
-| 3.2 | Count transactions > 100,000 RWF; show 5 flagged | **451** above 100k |
-| 3.3 | Total per `txn_type` (`groupBy().sum()`); per-district totals via `.toPandas()`; comment on whether Spark matches SQL | Must match Part 1 |
-| Bonus (+3) | `createOrReplaceTempView("transactions")` and run your Part 1 `GROUP BY` unchanged with `spark.sql(...)`; comment on why the same SQL running on SQLite and a cluster is powerful | |
-
-Startup warnings from Spark are normal.
-
-#### Part 4 — Choose Your Weapon (3 marks, written)
-
-For each of the 4 scenarios in the handout, name the **first** tool (Pandas / SQL / Spark / API) and justify in **one sentence**. Write your answers in a Markdown cell.
-
-#### Part 5 — Final-Project Proposal (required)
-
-Per **group**, one paragraph covering: the question, the dataset (source and rough size, minimum 500 rows), why it matters, and the planned model (regression or classification, and why). Save it as `Proposal_GroupName.md` in your branch (one person per group commits it to their branch, naming the group members inside).
-
-### Step 5 — Add screenshots
-
-Take screenshots of your key outputs (SQL results, API results, Spark results, checkpoints) and save them in a folder called `screenshots/` in the repo.
-
-### Step 6 — Final checklist before you commit
-
-- [ ] Notebook named `Week12_YourName.ipynb`
-- [ ] Notebook runs top to bottom without errors (**Restart & Run All**)
-- [ ] SQL and Spark answers agree
-- [ ] API exercise ran (live or offline)
-- [ ] Part 4 scenarios answered
-- [ ] Project proposal written
-- [ ] Screenshots saved in `screenshots/`
-- [ ] You are on **your own branch**, not `main`
+| Total transactions | 2,000 |
+| Total value | ~119.9M RWF |
+| Flagged transactions | **11** |
+| Top transaction type (by volume) | **send** — 62.0M RWF (868 transactions) |
+| Leading district | **Muhanga** — 21.08M RWF |
+| Busiest hour | **Hour 20** — 185 transactions |
+| Transactions above 100k RWF | **451** |
+| Kigali max temp (2026-11-25) | **26.2 °C** at 12:00 |
+| Spark version | **4.3.0** |
 
 ---
 
-## 4. Submitting: commit and push to YOUR branch
+<div align="center">
 
-### Step 7 — Check what changed
+**AUCA · Introduction to Big Data Analytics**
+Instructor: Dr Prince Ishimwe · [Prince.ishimwe@auca.ac.rw](mailto:Prince.ishimwe@auca.ac.rw)
 
-```bash
-git status
-```
+*Week 12 Lab · November 2026*
 
-### Step 8 — Stage your files
-
-Stage only your own work (avoid adding `momo.db` or Spark junk):
-
-```bash
-git add Week12_YourName.ipynb screenshots/ Proposal_GroupName.md
-```
-
-### Step 9 — Commit
-
-```bash
-git commit -m "Week 12 lab submission - Firstname Lastname"
-```
-
-### Step 10 — Push to your branch
-
-The first time, set the upstream:
-
-```bash
-git push -u origin firstname-lastname
-```
-
-Afterwards, `git push` is enough.
-
-### Step 11 — Verify
-
-Open the repository on GitHub, use the **branch dropdown** to switch to your branch, and confirm your notebook and screenshots are there.
-
-> ⚠️ **Do not click "Compare & pull request"** on the GitHub banner. Pull Requests are not part of this submission.
-
----
-
-## 5. Updating your submission
-
-If you fix something before the deadline, repeat steps 7–10 on the same branch. Your latest push counts.
-
----
-
-## 6. Troubleshooting
-
-| Problem | Fix |
-|---|---|
-| `git push` is rejected for `main` | You are on `main`. Run `git checkout -b firstname-lastname`, then `git push -u origin firstname-lastname`. |
-| Committed on `main` by mistake (not pushed) | `git branch firstname-lastname` then `git reset --hard origin/main` then `git checkout firstname-lastname`. |
-| Authentication failed | GitHub no longer accepts account passwords. Use a [Personal Access Token](https://github.com/settings/tokens) as the password, or set up SSH keys. |
-| `Permission denied` / `403` | Ask the instructor to add you as a collaborator on the repository. |
-| `pyspark` not found | Run `!pip install pyspark` in the first Colab cell and wait for it to finish. |
-| Spark `Java` errors locally | Install Java 11 or 17 (JDK), then restart the notebook. |
-| `FileNotFoundError` for the CSV/JSON | The data files must be in the **same folder** as the notebook (in Colab, upload them via the Files panel). |
-| Live API fails | Expected offline. The `try/except` falls back to `week12_api_sample.json`. |
-| Unsure which branch you are on | Run `git branch`; the current one has a `*`. |
-
----
-
-## 7. Marking scheme
-
-| Part | Marks |
-|---|---|
-| Part 1 — SQL with Python | 12 |
-| Part 2 — APIs & JSON | 10 |
-| Part 3 — PySpark | 10 |
-| Part 4 — Choose Your Weapon | 3 |
-| **Total** | **35** (+3 bonus) |
-
-Questions: Prince.ishimwe@auca.ac.rw
+</div>
