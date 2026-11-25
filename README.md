@@ -10,7 +10,7 @@ Group C :
 8. Ishimwe Abdul Salam 28816
 9. MICOMYIZA Justin 28780
 10. RUZA WACU Ange Delphin 29270
-11. 
+11. MUSERUKA Magnificat Guillaume 28325
 12. 
 13.
 
